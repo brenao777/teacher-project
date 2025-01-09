@@ -9,6 +9,7 @@ import ProtectedRouter from './HOCs/ProtectedRouter';
 import RegisterForm from './components/ui/RegisterForm';
 import LoginForm from './components/ui/LoginForm';
 import Calendar from './components/ui/Calendar';
+import ResetPasswordForm from './components/ui/ResetPasswordForm';
 
 function App() {
   const { user, loginHandler, logoutHandler, registerHandler } = useUser();
@@ -47,6 +48,10 @@ function App() {
             {
               path: '/signin',
               element: <LoginForm loginHandler={loginHandler} />,
+            },
+            {
+              path: '/reset-password',
+              element: <ResetPasswordForm />,
             },
           ],
         },
