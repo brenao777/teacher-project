@@ -16,11 +16,10 @@ slotRouter
   })
   .post(verifyAccessToken, async (req, res) => {
     const { title, start, end } = req.body;
-    const { id } = res.locals.user
+    const { id } = res.locals.user;
     try {
-      const newSlot = await Slot.create({ title, start, end, adminId : id });
+      const newSlot = await Slot.create({ title, start, end, adminId: id });
       res.status(201).json(newSlot);
-      // console.log(newSlot, 12312312312312312);
     } catch (error) {
       res.status(500).json({ message: 'Ошибка сервера' });
       console.log(error);
@@ -47,17 +46,28 @@ slotRouter
     }
   });
 
-  // slotRouter
-  // .route('/:id')
-  // .get(async (req, res) => {
-  //   const { id } = req.params;
-  //   try {
-  //     const slot = await Slot.findOne({ where: { id } });
-  //     res.json(slot);
-  //   } catch (error) {
-  //     res.status(500).json({ message: 'Ошибка сервера' });
-  //     console.log(error);
-  //   }
-  // });
+slotRouter
+  .route('/:id')
+  .get(async (req, res) => {
+    const { id } = req.params;
+    try {
+      const slot = await Slot.findOne({ where: { id } });
+      res.json(slot);
+    } catch (error) {
+      res.status(500).json({ message: 'Ошибка сервера' });
+      console.log(error);
+    }
+  })
+  .put(verifyAccessToken, async (req, res) => {
+    const { id } = req.params;
+    const { title, start, end } = req.body;
+    try {
+      await Slot.update({ title, start, end }, { where: { id } });
+      res.status(200).json({ message: 'Слот изменен' });
+    } catch (error) {
+      res.status(500).json({ message: 'Ошибка сервера' });
+      console.log(error);
+    }
+  });
 
 module.exports = slotRouter;
