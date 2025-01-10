@@ -32,7 +32,7 @@ function App() {
         //   path: '/events/:id',
         //   element: (
         //     <ProtectedRouter isAllowed={user.status !== 'logged'} redirectTo={'/signin'}>
-        //       <OneItemPage user={user} />
+        //       <Calendar user={user} />
         //     </ProtectedRouter>
         //   ),
         // },

@@ -10,21 +10,24 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      startTime: {
-        type: Sequelize.DATE,
+      title: {
+        type: Sequelize.STRING,
       },
-      endTime: {
-        type: Sequelize.DATE,
+      start: {
+        type: Sequelize.STRING,
       },
-      adminId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'AdminUsers',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
-        allowNull: false,
+      end: {
+        type: Sequelize.STRING,
       },
+      // adminId: {
+      //   type: Sequelize.INTEGER,
+      //   references: {
+      //     model: 'AdminUsers',
+      //     key: 'id',
+      //   },
+      //   onDelete: 'CASCADE',
+      //   allowNull: false,
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

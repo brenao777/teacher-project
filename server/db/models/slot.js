@@ -5,14 +5,15 @@ module.exports = (sequelize, DataTypes) => {
   class Slot extends Model {
     static associate({ Booking, AdminUser }) {
       this.hasMany(Booking, { foreignKey: 'slotId' });
-      this.belongsTo(AdminUser, { foreignKey: 'adminId' });
+      // this.belongsTo(AdminUser, { foreignKey: 'adminId' });
     }
   }
   Slot.init(
     {
-      startTime: DataTypes.DATE,
-      endTime: DataTypes.DATE,
-      adminId: DataTypes.INTEGER,
+      title: DataTypes.STRING,
+      start: DataTypes.STRING,
+      end: DataTypes.STRING,
+      // adminId: DataTypes.INTEGER,
     },
     {
       sequelize,
