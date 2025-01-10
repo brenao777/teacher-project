@@ -16,7 +16,7 @@ export function createEventId() {
 
 export default function Calendar() {
 
-  return <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" />;
+  
   
   const [weekendsVisible, setWeekendsVisible] = useState(false);
   const [currentEvents, setCurrentEvents] = useState([]);
