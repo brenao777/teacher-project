@@ -20,7 +20,6 @@ const LoginForm = ({ loginHandler }) => {
   const onSubmit = (data) => {
     console.log(data);
     loginHandler(data);
-    alert(`Ссылка для восстановления доступа выслана на вашу почту!: ${data.email}`);
     reset();
   };
 

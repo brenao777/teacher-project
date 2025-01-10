@@ -11,6 +11,7 @@ const ResetPasswordForm = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    alert(`Ссылка для восстановления доступа отправлена на вашу почту!: ${data.email}`);
   };
 
   return (

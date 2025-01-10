@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useUser from '../../hooks/useUser'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../ui/User.css'; 
 
 function UserPage() {
   const { user } = useUser(); 
@@ -35,9 +36,9 @@ function UserPage() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card">
-        <div className="card-body">
+    <div className="container-fluid mt-2">
+      <div className="card" style={{ width: '290px' }}> 
+        <div className="card-body text-left"> 
           {user.status === 'logged' ? (
             <div>
               <p className="card-text fw-bold h5">Имя: {user.user.firstName} {user.user.lastName}</p>
@@ -52,9 +53,8 @@ function UserPage() {
         </div>
       </div>
 
-      {/* Модальное окно для изменения пароля */}
       {showModal && (
-        <div className="modal show" style={{ display: 'block' }}>
+        <div className="modal show" style={{ display: 'block'}}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
