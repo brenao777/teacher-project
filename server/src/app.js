@@ -19,6 +19,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/tokens', tokenRouter);
 app.use('/api/slots', slotRouter);
 app.use('/api/bookings', bookingRouter);
-app.use('/api/password', passwordRouter)
+app.use('/api/password', passwordRouter);
 
 module.exports = app;

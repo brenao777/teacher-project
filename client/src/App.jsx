@@ -5,10 +5,8 @@ import MainPage from './components/pages/MainPage';
 import useUser from './hooks/useUser';
 import NotFoundPage from './components/pages/NotFoundPage';
 import ProtectedRouter from './HOCs/ProtectedRouter';
-// import EventCard from './components/ui/EventCard';
 import RegisterForm from './components/ui/RegisterForm';
 import LoginForm from './components/ui/LoginForm';
-import Calendar from './components/ui/Calendar';
 
 function App() {
   const { user, loginHandler, logoutHandler, registerHandler } = useUser();
@@ -18,23 +16,14 @@ function App() {
       path: '/',
       element: <Layout logoutHandler={logoutHandler} user={user} />,
       children: [
-        { path: '/', element: <MainPage /> },
         {
-          path: '/events',
+          path: '/',
           element: (
-            <ProtectedRouter isAllowed={user.status !== 'logged'} redirectTo={'/signin'}>
-              <Calendar user={user} />
+            <ProtectedRouter isAllowed={user.status === 'guest'} redirectTo={'/signin'}>
+              <MainPage />
             </ProtectedRouter>
-          ),
+          ),  
         },
-        // {
-        //   path: '/events/:id',
-        //   element: (
-        //     <ProtectedRouter isAllowed={user.status !== 'logged'} redirectTo={'/signin'}>
-        //       <Calendar user={user} />
-        //     </ProtectedRouter>
-        //   ),
-        // },
         {
           element: (
             <ProtectedRouter isAllowed={user.status === 'logged'} redirectTo={'/'} />

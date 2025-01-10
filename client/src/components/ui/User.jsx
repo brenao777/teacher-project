@@ -40,7 +40,7 @@ function UserPage() {
         <div className="card-body">
           {user.status === 'logged' ? (
             <div>
-              <p className="card-text fw-bold h5">Имя: {user.user.firstName}</p>
+              <p className="card-text fw-bold h5">Имя: {user.user.firstName} {user.user.lastName}</p>
               <p className="card-text fw-bold h5">Email: {user.user.email}</p>
               <button className="btn btn-primary mt-3" onClick={() => setShowModal(true)}>
                 Изменить пароль
