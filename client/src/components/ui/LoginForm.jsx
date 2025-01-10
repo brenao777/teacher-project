@@ -1,5 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ loginHandler }) => {
   const {
@@ -14,9 +15,12 @@ const LoginForm = ({ loginHandler }) => {
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
     console.log(data);
     loginHandler(data);
+    alert(`Ссылка для восстановления доступа выслана на вашу почту!: ${data.email}`);
     reset();
   };
 
@@ -77,6 +81,15 @@ const LoginForm = ({ loginHandler }) => {
 
               <Button type="submit" variant="primary" className="w-100 mt-2">
                 Войти
+              </Button>
+
+              <Button
+                type="button"
+                variant="link"
+                className="w-100 mt-2"
+                onClick={() => navigate('/reset-password')}
+              >
+                Забыли пароль?
               </Button>
             </Form>
           </div>

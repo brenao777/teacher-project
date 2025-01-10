@@ -3,6 +3,11 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 function NavBar({ user, logoutHandler }) {
+  const handleLogout = () => {
+    logoutHandler(); 
+    window.location.reload(); 
+  };
+
   return (
     <Navbar bg="dark" data-bs-theme="dark">
       <Container>
@@ -17,7 +22,7 @@ function NavBar({ user, logoutHandler }) {
             <>
               <Nav.Link href="/">Личный кабинет</Nav.Link>
               {/* <Nav.Link href="/event">Добавить</Nav.Link> */}
-              <Nav.Link onClick={logoutHandler}>Выйти</Nav.Link>
+              <Nav.Link onClick={handleLogout}>Выйти</Nav.Link>
             </>
           )}
         </Nav>
