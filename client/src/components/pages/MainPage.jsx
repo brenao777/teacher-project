@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import Calendar from '../ui/Calendar';
 import axiosInstance from '../../api/axiosInstance';
-
+import User from '../ui/User'
 function MainPage() {
   const [events, setEvents] = useState([]);
 
@@ -23,6 +23,7 @@ function MainPage() {
 
   return (
     <Container>
+      <User/>
       {/* {events.map((event) => (
         <div key={event.id} className="col-3">
           <Calendar event={event} />
