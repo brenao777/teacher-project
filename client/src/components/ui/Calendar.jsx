@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axiosInstance from '../../api/axiosInstance';
 import EventModal from './EventModal';
+import './Calendar.css';
 
 let eventGuid = 0;
 
@@ -21,11 +22,12 @@ export default function Calendar() {
   const [events, setEvents] = useState([]); // Состояние для хранения событий
 
   useEffect(() => {
-    // Получение событий из базы данных
     axiosInstance('/slots').then((res) => {
-      setEvents(res.data); // Сохранение событий в состояние
+      setEvents(res.data);
     });
   }, []);
+
+  // ОТОБРАЖЕНИЕ ВЫХОДНЫХ ДНЕЙ
 
   function handleWeekendsToggle() {
     setWeekendsVisible(!weekendsVisible);
@@ -44,8 +46,11 @@ export default function Calendar() {
   }
 
   function handleEvents(events) {
+    console.log(events);
     setCurrentEvents(events);
   }
+
+  // ДОБАВЛЕНИЕ СОБЫТИЯ
 
   const handleSave = (title, selectedTeacherId) => {
     const calendarApi = selectInfo.view.calendar;
@@ -56,32 +61,54 @@ export default function Calendar() {
       title,
       start: selectInfo.startStr,
       end: selectInfo.endStr,
-      allDay: selectInfo.allDay,
-      adminId: selectedTeacherId,
+      // allDay: selectInfo.allDay,
+      // adminId: selectedTeacherId,
     });
 
     const newEvent = {
       title: data._def.title,
       start: data._instance.range.start,
       end: data._instance.range.end,
-      adminId: selectedTeacherId,
+      // adminId: selectedTeacherId,
     };
 
     axiosInstance.post('/slots', newEvent).then((response) => {
       setEvents((prevEvents) => [...prevEvents, response.data]); // Обновляем события
     });
-
     setIsModalOpen(false);
   };
 
+  const handleEventChange = (info) => {
+    const updatedEvent = {
+      id: info.event.id,
+      start: info.event.start.toISOString(),
+      end: info.event.end.toISOString(),
+      title: info.event.title
+    };
+    console.log(updatedEvent);
+
+    axiosInstance
+      .put(`/slots/${updatedEvent.id}`, updatedEvent)
+      .then((response) => {
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.id === response.data.id ? response.data : event,
+          ),
+        );
+      })
+      .catch((error) => {
+        console.error('Ошибка при обновлении события ------>', error);
+      });
+  };
+
   return (
-    <div className="demo-app">
+    <div className="app">
       <Sidebar
         weekendsVisible={weekendsVisible}
         handleWeekendsToggle={handleWeekendsToggle}
         currentEvents={currentEvents}
       />
-      <div className="demo-app-main">
+      <div className="app-main">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
@@ -94,13 +121,15 @@ export default function Calendar() {
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
+          eventOverlap={false}
           weekends={weekendsVisible}
+          eventChange={handleEventChange}
           select={handleDateSelect}
           eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
           eventContent={(eventInfo) => renderEventContent(eventInfo, handleEventClick)}
           // eventClick={handleEventClick}
           // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Добавить бронирование (для студентов)
-          events={events} // Передаем события в FullCalendar
+          events={events}
           eventsSet={handleEvents}
         />
       </div>
@@ -118,7 +147,6 @@ function renderEventContent(eventInfo, handleEventClick) {
   return (
     <div>
       <p onClick={() => handleEventClick(eventInfo)}>❌</p>
-      {/* Передаем eventInfo для удаления */}
       <i>{eventInfo.event.title}</i>
       <br />
       <b>{eventInfo.timeText}</b>
@@ -136,8 +164,8 @@ function Sidebar({ weekendsVisible, handleWeekendsToggle, currentEvents }) {
   }, []);
 
   return (
-    <div className="demo-app-sidebar">
-      <div className="demo-app-sidebar-section">
+    <div className="app-sidebar">
+      <div className="app-sidebar-section">
         <label>
           <input
             type="checkbox"
@@ -147,7 +175,7 @@ function Sidebar({ weekendsVisible, handleWeekendsToggle, currentEvents }) {
           Показывать выходные
         </label>
       </div>
-      <div className="demo-app-sidebar-section">
+      <div className="app-sidebar-section">
         <h2>Расписание занятий ({slots.length})</h2>
         <ul>
           {slots.map((slot) => (
@@ -160,15 +188,16 @@ function Sidebar({ weekendsVisible, handleWeekendsToggle, currentEvents }) {
 }
 
 function SidebarEvent({ slot }) {
+  const config = { hour: 'numeric', minute: 'numeric', hour12: false };
   return (
     <li>
-      <i>{slot.title}</i>
+      <b>{slot.title}</b>
       <br />
-      <b>
-        {formatDate(slot.start, { hour: 'numeric', minute: 'numeric', hour12: false })}
-      </b>
+      <i>
+        {formatDate(slot.start, config)} - {formatDate(slot.end, config)}
+      </i>
       <br />
-      <b>{formatDate(slot.end, { hour: 'numeric', minute: 'numeric', hour12: false })}</b>
+      {/* <b>{formatDate(slot.end, { hour: 'numeric', minute: 'numeric', hour12: false })}</b> */}
     </li>
   );
 }
