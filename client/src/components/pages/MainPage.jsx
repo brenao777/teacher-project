@@ -6,20 +6,20 @@ import Calendar from '../ui/Calendar';
 import axiosInstance from '../../api/axiosInstance';
 import User from '../ui/User'
 function MainPage() {
-  const [events, setEvents] = useState([]);
+  // const [events, setEvents] = useState([]);
 
-  useEffect(() => {
-    const getEvents = async () => {
-      try {
-        const res = await axiosInstance('/events');
-        const result = res.data;
-        setEvents(result);
-      } catch (error) {
-        console.error('Ошибка при загрузке:', error);
-      }
-    };
-    getEvents();
-  }, []);
+  // useEffect(() => {
+  //   const getEvents = async () => {
+  //     try {
+  //       const res = await axiosInstance('/events');
+  //       const result = res.data;
+  //       setEvents(result);
+  //     } catch (error) {
+  //       console.error('Ошибка при загрузке:', error);
+  //     }
+  //   };
+  //   getEvents();
+  // }, []);
 
   return (
     <Container>

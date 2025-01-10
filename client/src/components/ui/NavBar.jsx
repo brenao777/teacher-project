@@ -16,7 +16,7 @@ function NavBar({ user, logoutHandler }) {
           ) : (
             <>
               <Nav.Link href="/">Личный кабинет</Nav.Link>
-              <Nav.Link href="/event">Добавить</Nav.Link>
+              {/* <Nav.Link href="/event">Добавить</Nav.Link> */}
               <Nav.Link onClick={logoutHandler}>Выйти</Nav.Link>
             </>
           )}
