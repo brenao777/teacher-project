@@ -1,5 +1,5 @@
 const express = require('express');
-const { Slot, AdminUser } = require('../../db/models');
+const { Slot } = require('../../db/models');
 const { verifyAccessToken } = require('../middlewares/verifyTokens');
 const slotRouter = express.Router();
 
@@ -46,5 +46,18 @@ slotRouter
       console.log(error);
     }
   });
+
+  // slotRouter
+  // .route('/:id')
+  // .get(async (req, res) => {
+  //   const { id } = req.params;
+  //   try {
+  //     const slot = await Slot.findOne({ where: { id } });
+  //     res.json(slot);
+  //   } catch (error) {
+  //     res.status(500).json({ message: 'Ошибка сервера' });
+  //     console.log(error);
+  //   }
+  // });
 
 module.exports = slotRouter;

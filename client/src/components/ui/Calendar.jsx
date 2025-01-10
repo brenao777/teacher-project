@@ -22,8 +22,8 @@ export default function Calendar() {
 
   useEffect(() => {
     // Получение событий из базы данных
-    axiosInstance('/slots').then((response) => {
-      setEvents(response.data); // Сохранение событий в состояние
+    axiosInstance('/slots').then((res) => {
+      setEvents(res.data); // Сохранение событий в состояние
     });
   }, []);
 
@@ -96,8 +96,10 @@ export default function Calendar() {
           dayMaxEvents={true}
           weekends={weekendsVisible}
           select={handleDateSelect}
-          eventContent={renderEventContent}
-          eventClick={handleEventClick}
+          eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+          eventContent={(eventInfo) => renderEventContent(eventInfo, handleEventClick)}
+          // eventClick={handleEventClick}
+          // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Добавить бронирование (для студентов)
           events={events} // Передаем события в FullCalendar
           eventsSet={handleEvents}
         />
@@ -112,12 +114,15 @@ export default function Calendar() {
   );
 }
 
-function renderEventContent(eventInfo) {
+function renderEventContent(eventInfo, handleEventClick) {
   return (
-    <>
-      <b>{eventInfo.timeText}</b>
+    <div>
+      <p onClick={() => handleEventClick(eventInfo)}>❌</p>
+      {/* Передаем eventInfo для удаления */}
       <i>{eventInfo.event.title}</i>
-    </>
+      <br />
+      <b>{eventInfo.timeText}</b>
+    </div>
   );
 }
 
@@ -157,8 +162,13 @@ function Sidebar({ weekendsVisible, handleWeekendsToggle, currentEvents }) {
 function SidebarEvent({ slot }) {
   return (
     <li>
-      <b>{formatDate(slot.start, { year: 'numeric', month: 'short', day: 'numeric' })}</b>
       <i>{slot.title}</i>
+      <br />
+      <b>
+        {formatDate(slot.start, { hour: 'numeric', minute: 'numeric', hour12: false })}
+      </b>
+      <br />
+      <b>{formatDate(slot.end, { hour: 'numeric', minute: 'numeric', hour12: false })}</b>
     </li>
   );
 }
