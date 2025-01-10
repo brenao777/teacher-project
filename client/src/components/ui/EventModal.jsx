@@ -9,6 +9,8 @@ const EventModal = ({ isOpen, onRequestClose, onSave }) => {
     onSave(title);
     setTitle('');
     onRequestClose();
+    window.location.reload();
+    // УДАЛИТЬ КОСТЫЛЬ
   };
 
   return (
