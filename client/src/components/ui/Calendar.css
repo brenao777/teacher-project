@@ -46,7 +46,8 @@ b {
 
 .app-main {
   flex-grow: 1;
-  padding: 3em;
+  padding-top: 3em;
+  margin-right: 20em;
 }
 
 .fc {

@@ -6,9 +6,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axiosInstance from '../../api/axiosInstance';
 import EventModal from './EventModal';
+import BookingEventModal from './BookingEventModal';
 import useUser from '../../hooks/useUser';
 import './Calendar.css';
 
+const durations = [45, 60, 90, 120];
 let eventGuid = 0;
 
 export function createEventId() {
@@ -21,16 +23,52 @@ export default function Calendar() {
   const [currentEvents, setCurrentEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectInfo, setSelectInfo] = useState(null);
+  const [selectedDuration, setSelectedDuration] = useState(45);
   const [events, setEvents] = useState([]); // Состояние для хранения событий
 
-
-  console.log(user, 123123123);
-  
   useEffect(() => {
     axiosInstance('/slots').then((res) => {
       setEvents(res.data);
     });
   }, []);
+
+  
+
+  const bookingData = {
+    userId: user?.id, // Замените на реальный userId
+    slotId: selectInfo?.id,
+    status: 'booked',
+    homework: '', // Добавьте необходимые данные
+    duration: selectedDuration.toString(),
+  };
+
+  // Сохранение данных в Booking
+  axiosInstance.post('/bookings', bookingData)
+    .then(() => {
+      // Уменьшение времени в Slot
+      const newEndTime = new Date(selectInfo.end);
+      newEndTime.setMinutes(newEndTime.getMinutes() - selectedDuration);
+
+      const updatedSlot = {
+        title: selectInfo.title,
+        start: selectInfo.start.toISOString(),
+        end: newEndTime.toISOString(),
+      };
+
+      return axiosInstance.put(`/slots/${selectInfo.id}`, updatedSlot);
+    })
+    .then(() => {
+      // Обновление событий
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.id === selectInfo.id ? { ...event, end: newEndTime.toISOString() } : event
+        )
+      );
+      setIsModalOpen(false);
+    })
+    .catch((error) => {
+      console.error('Ошибка при сохранении:', error);
+    });
 
   // ОТОБРАЖЕНИЕ ВЫХОДНЫХ ДНЕЙ
 
@@ -116,66 +154,73 @@ export default function Calendar() {
         handleWeekendsToggle={handleWeekendsToggle}
         currentEvents={currentEvents}
       />
-      {user?.user?.isAdmin ?
-      <div className="app-main">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          headerToolbar={{
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
-          }}
-          initialView="timeGridWeek"
-          editable={true}
-          selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          eventOverlap={false}
-          weekends={weekendsVisible}
-          eventChange={handleEventChange}
-          select={handleDateSelect}
-          eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
-          eventContent={(eventInfo) =>
-            renderEventContent(eventInfo, handleEventClick, user)
-          }
-          events={events}
-          eventsSet={handleEvents}
-          // eventClick={handleEventClick}
-          // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Добавить бронирование (для студентов)
-        />
-      </div>
-: <div className="app-main">
-<FullCalendar
-  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-  headerToolbar={{
-    left: 'prev,next today',
-    left: 'title',
-    right: 'dayGridMonth,timeGridWeek,timeGridDay',
-  }}
-  initialView="timeGridWeek"
-  editable={true}
-  selectable={true}
-  selectMirror={true}
-  dayMaxEvents={true}
-  eventOverlap={false}
-  weekends={weekendsVisible}
-  eventChange={handleEventChange}
-  select={handleDateSelect}
-  eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
-  eventContent={(eventInfo) =>
-    renderEventContent(eventInfo, handleEventClick, user)
-  }
-  events={events}
-  eventsSet={handleEvents}
-  // eventClick={handleEventClick}
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Добавить бронирование (для студентов)
-/>
-</div>}
-      <EventModal
+      {user?.user?.isAdmin ? (
+        <div className="app-main">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            }}
+            initialView="timeGridWeek"
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            eventOverlap={false}
+            weekends={weekendsVisible}
+            eventChange={handleEventChange}
+            select={handleDateSelect}
+            eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+            eventContent={(eventInfo) =>
+              renderEventContent(eventInfo, handleEventClick, user)
+            }
+            events={events}
+            eventsSet={handleEvents}
+          />
+          <EventModal
+            isOpen={isModalOpen}
+            onRequestClose={() => setIsModalOpen(false)}
+            onSave={handleSave}
+          />
+        </div>
+      ) : (
+        <div className="app-main">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: 'prev,next today',
+              left: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            }}
+            initialView="timeGridWeek"
+            editable={false}
+            selectable={false}
+            selectMirror={true}
+            dayMaxEvents={true}
+            eventOverlap={false}
+            weekends={weekendsVisible}
+            eventChange={handleEventChange}
+            select={handleDateSelect}
+            eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+            eventContent={(eventInfo) =>
+              renderEventContent(eventInfo, handleEventClick, user)
+            }
+            events={events}
+            eventsSet={handleEvents}
+            eventClick={() => setIsModalOpen(true)}
+          />
+                    <BookingEventModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         onSave={handleSave}
+        selectedDuration={selectedDuration}
+        setSelectedDuration={setSelectedDuration}
+        durations={durations}
       />
+        </div>
+      )}
     </div>
   );
 }

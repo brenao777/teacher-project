@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 function NavBar({ user, logoutHandler }) {
   const handleLogout = () => {
     logoutHandler(); 
-    window.location.reload(); 
+    // window.location.reload();
   };
 
   return (

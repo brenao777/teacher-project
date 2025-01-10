@@ -7,7 +7,6 @@ import NotFoundPage from './components/pages/NotFoundPage';
 import ProtectedRouter from './HOCs/ProtectedRouter';
 import RegisterForm from './components/ui/RegisterForm';
 import LoginForm from './components/ui/LoginForm';
-import Calendar from './components/ui/Calendar';
 import ResetPasswordForm from './components/ui/ResetPasswordForm';
 
 function App() {
