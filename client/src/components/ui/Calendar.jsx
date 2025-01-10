@@ -32,18 +32,17 @@ export default function Calendar() {
     });
   }, []);
 
-  
-
   const bookingData = {
     userId: user?.id, // Замените на реальный userId
-    slotId: selectInfo?.id,
+    slotId: events.selectInfo?.id,
     status: 'booked',
     homework: '', // Добавьте необходимые данные
     duration: selectedDuration.toString(),
   };
 
   // Сохранение данных в Booking
-  axiosInstance.post('/bookings', bookingData)
+  axiosInstance
+    .post('/bookings', bookingData)
     .then(() => {
       // Уменьшение времени в Slot
       const newEndTime = new Date(selectInfo.end);
@@ -61,8 +60,10 @@ export default function Calendar() {
       // Обновление событий
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
-          event.id === selectInfo.id ? { ...event, end: newEndTime.toISOString() } : event
-        )
+          event.id === selectInfo.id
+            ? { ...event, end: newEndTime.toISOString() }
+            : event,
+        ),
       );
       setIsModalOpen(false);
     })
@@ -191,7 +192,7 @@ export default function Calendar() {
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
               left: 'prev,next today',
-              left: 'title',
+              center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay',
             }}
             initialView="timeGridWeek"
@@ -211,14 +212,14 @@ export default function Calendar() {
             eventsSet={handleEvents}
             eventClick={() => setIsModalOpen(true)}
           />
-                    <BookingEventModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        onSave={handleSave}
-        selectedDuration={selectedDuration}
-        setSelectedDuration={setSelectedDuration}
-        durations={durations}
-      />
+          <BookingEventModal
+            isOpen={isModalOpen}
+            onRequestClose={() => setIsModalOpen(false)}
+            onSave={handleSave}
+            selectedDuration={selectedDuration}
+            setSelectedDuration={setSelectedDuration}
+            durations={durations}
+          />
         </div>
       )}
     </div>
@@ -228,7 +229,11 @@ export default function Calendar() {
 function renderEventContent(eventInfo, handleEventClick, user) {
   return (
     <div>
-      {user?.user?.isAdmin && <p onClick={() => handleEventClick(eventInfo)}>❌</p>}
+      {user?.user?.isAdmin && (
+        <p className="delBtn" onClick={() => handleEventClick(eventInfo)}>
+          ✖
+        </p>
+      )}
       <i>{eventInfo.event.title}</i>
       <br />
       <b>{eventInfo.timeText}</b>

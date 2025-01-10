@@ -5,12 +5,10 @@ const slotRouter = require('./routes/slotRouter');
 const bookingRouter = require('./routes/bookingRouter');
 const tokenRouter = require('./routes/tokenRouter');
 const authRouter = require('./routes/authRouter');
+const path = require('path');
 
-const newPasswordRouter = require('./routes/newPasswordRouter');
-const passwordRecoveryRouter = require('./routes/passwordRecoveryRouter');
 
 const passwordRouter = require('./routes/passwordRouter');
-
 
 const app = express();
 
@@ -25,10 +23,11 @@ app.use('/api/tokens', tokenRouter);
 app.use('/api/slots', slotRouter);
 app.use('/api/bookings', bookingRouter);
 
-app.use('/api', newPasswordRouter);
-app.use('/api', passwordRecoveryRouter);
+app.use('/api/password', passwordRouter);
 
-app.use('/api/password', passwordRouter)
-
+app.use(express.static(path.join(__dirname, '..', 'dist')));
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
 
 module.exports = app;

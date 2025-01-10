@@ -1,0 +1,11 @@
+.Modal__Content {
+  width: 500px;
+  color: #fff;
+  border-radius: 15px;
+  border: black solid 1.2px;
+  padding: 10px;
+  margin-left: 80%;
+  margin-bottom: 30%;
+  background-color: #007bff;
+}
+

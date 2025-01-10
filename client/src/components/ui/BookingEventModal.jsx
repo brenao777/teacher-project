@@ -1,4 +1,5 @@
 import Modal from 'react-modal';
+import './BookingEventModal.css';
 
 const BookingEventModal = ({
   isOpen,

@@ -1,7 +1,9 @@
+.container-fluid {
+  position: absolute;
+}
 
-
-  .card {
-    border-radius: 10px; 
-   
-  }
- 
+.card {
+  border-radius: 10px;
+  position: absolute;
+  right: 40px;
+}
